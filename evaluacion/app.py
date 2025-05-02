@@ -16,6 +16,7 @@ class Student(database.Model):
     curso = database.Column(database.String(100))
 
 class Evaluacion(database.Model):
+    __tablename__= 'evaluacion'
     id = database.Column(database.Integer, primary_key=True)
     rut_estudiante = database.Column(database.String(12),database.ForeignKey('student.rut'), nullable=False)
     semestre = database.Column(database.String(20))
@@ -26,8 +27,8 @@ class Evaluacion(database.Model):
 def crear_evaluacion():
     data = request.get_json()
     rut_estudiante = data.get('rut_estudiante')
-    estudiante_rut = requests.get(f'http://estudiante:5000/estudiantes/{rut_estudiante}')
-    if estudiante_rut.status_code != 200:
+    solicitud = requests.get(f'http://estudiante:5000/estudiantes/{rut_estudiante}')
+    if solicitud.status_code != 200:
         return jsonify({"mensaje": "No se puede crear evaluación: estudiante no encontrado."}), 400
     else:
         nueva_eva = Evaluacion(**data)
