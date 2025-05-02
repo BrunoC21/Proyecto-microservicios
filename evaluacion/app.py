@@ -50,17 +50,20 @@ def obtener_evaluaciones():
         })
     return jsonify(result)
 
-@app.route('/evaluaciones/<int:id>', methods=['GET'])
-def obtener_evaluacion(id):
-    evaluacion = Evaluacion.query.get(id)
-    if evaluacion:
-        return jsonify({
-            'id': evaluacion.id,
-            'rut_estudiante': evaluacion.rut_estudiante,
-            'semestre': evaluacion.semestre,
-            'asignatura': evaluacion.asignatura,
-            'nota': evaluacion.nota
-        })
+@app.route('/evaluaciones/<rut_estudiante>', methods=['GET'])
+def obtener_evaluacion(rut_estudiante):
+    evaluaciones = Evaluacion.query.filter_by(rut_estudiante=rut_estudiante).all()
+    if evaluaciones:
+        result = []
+        for e in evaluaciones:
+            result.append({
+                'id': e.id,
+                'rut_estudiante': e.rut_estudiante,
+                'semestre': e.semestre,
+                'asignatura': e.asignatura,
+                'nota': e.nota
+            })
+        return jsonify(result)
     else:
         return jsonify({"mensaje": "Evaluación no encontrada"}), 404
 
